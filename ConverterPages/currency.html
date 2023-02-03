@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ultimate Unit Convertor</title>
+    <meta name="description"
+        content="Quick, free, online all in one unit converter that converts common units of measurement, length, weight, temperature, currency converter.">
+    <meta name="keywords" content="online converter, weight, temperature, currency, converter">
+    <meta name="author" content="Medusaverse">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .btun{
+  width: 30%;
+  height: 40px;
+  background: #111111;
+  color: white;
+  border-radius: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 1em;
+  margin: 60px 30px 30px;
+}
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg bg-body-tertiary">
+        <div class="container-fluid">
+            <img src="https://cdn-icons-png.flaticon.com/128/2970/2970715.png">
+            <a class="navbar-brand">All-in-One Unit Converter</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="../index.html">Length</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="weight.html">Weight</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="temperature.html">Temperature</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="currency.html">Currency</a>
+                    </li>
+                </ul>
+                <form class="d-flex" role="search">
+                    <button type="button" class="btn btn-primary">
+                        <svg width="16" height="16" fill="currentColor" class="bi bi-github" viewBox="0 0 16 16">
+                            <path
+                                d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z">
+                            </path>
+                        </svg>
+                        <a href="https://github.com/Medusaverse">Source Code</a>
+                    </button>
+                    <button class="btn btn-outline-success" type="submit"><a href="https://ko-fi.com/medusaverse">Support Us</a></button>
+                </form>
+            </div>
+        </div>
+    </nav>
+
+
+    <div class="container">
+        <h1 class="converter-title">Currency Converter</h1>
+
+        <div class="converter-body">
+
+
+            <input type="number" placeholder="0" id="num">
+            <select name="currency" class="currency"></select>
+
+
+            <button class="btun" id="btn">Convert</button>
+
+
+            <input type="text" placeholder="0" id="ans" disabled>
+            <select name="currency" class="currency"></select>
+
+        </div>
+    </div>
+
+    <script>
+        const select = document.querySelectorAll(".currency");
+const btn = document.getElementById("btn");
+const num = document.getElementById("num");
+const ans = document.getElementById("ans");
+
+fetch("https://api.frankfurter.app/currencies")
+  .then((data) => data.json())
+  .then((data) => {
+    display(data);
+  });
+
+function display(data) {
+  const entries = Object.entries(data);
+  for (var i = 0; i < entries.length; i++) {
+    select[0].innerHTML += `<option value="${entries[i][0]}">${entries[i][0]}</option>`;
+    select[1].innerHTML += `<option value="${entries[i+1][0]}">${entries[i+1][0]}</option>`;
+  }
+}
+
+btn.addEventListener("click", () => {
+  let currency1 = select[0].value;
+  let currency2 = select[1].value;
+  let value = num.value;
+
+  if (currency1 != currency2) {
+    convert(currency1, currency2, value);
+  } else {
+    alert("Choose Different Currencies !!!");
+  }
+});
+
+function convert(currency1, currency2, value) {
+  const host = "api.frankfurter.app";
+  fetch(
+    `https://${host}/latest?amount=${value}&from=${currency1}&to=${currency2}`
+  )
+    .then((val) => val.json())
+    .then((val) => {
+      console.log(Object.values(val.rates)[0]);
+      ans.value = Object.values(val.rates)[0];
+    });
+}
+    </script>
+</body>
+</html>
